@@ -26,11 +26,8 @@ class OrderPage:
 
     def select_metro_station(self, metro_name):
         metro_input = self.wait.until(EC.element_to_be_clickable(OrderPageLocators.METRO_FIELD))
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", metro_input)
         metro_input.click()
-        metro_option = self.wait.until(
-            EC.element_to_be_clickable((By.XPATH, OrderPageLocators.METRO_OPTION_TEMPLATE.format(metro_name)))
-        )
-        metro_option.click()
 
     def fill_phone(self, phone):
         field = self.wait.until(EC.element_to_be_clickable(OrderPageLocators.PHONE_FIELD))
