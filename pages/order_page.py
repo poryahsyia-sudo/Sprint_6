@@ -2,7 +2,7 @@ import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
-
+from selenium.webdriver.common.keys import Keys 
 from pages.base_page import BasePage
 from locators.main_page_locators import MainPageLocators
 from locators.order_page_locators import OrderPageLocators
@@ -35,39 +35,48 @@ class OrderPage(BasePage):
         self.wait_and_click(OrderPageLocators.NEXT_BUTTON)
 
     @allure.step("Заполнение второй части формы заказа: дата={date}, срок={rental_period}")
-    def fill_second_step(self, date, rental_period, color, comment):
-        # Ввод даты и закрытие календаря выбором даты
+    def fill_second_step(self, date: str, rental_period: str, scooter_color: str, comment: str):
+        # Открываем поле даты и вводим дату
         self.wait_and_click(OrderPageLocators.DATE_FIELD)
-        date_field = self.wait_for_element(OrderPageLocators.DATE_FIELD)
-        date_field.send_keys(Keys.CONTROL + "a")
-        date_field.send_keys(Keys.BACKSPACE)
-        date_field.send_keys(date)
-        date_field.send_keys(Keys.ENTER)  # календарь закроется после выбора даты
+        # вводим дату и нажимаем Enter (твой прежний подход)
+        self.wait_and_send_keys(OrderPageLocators.DATE_FIELD, date)
+        # используем существующий хелпер для нажатия Enter (как было до этого)
+        try:
+            self.wait_and_press_enter(OrderPageLocators.DATE_FIELD)
+        except Exception:
+            # на всякий случай: если wait_and_press_enter отсутствует или упадёт,
+            # получим элемент и отправим ENTER напрямую
+            el = self.wait.until(EC.element_to_be_clickable(OrderPageLocators.DATE_FIELD))
+            el.send_keys(Keys.ENTER)
 
-        # Выбор периода аренды
+        # Ждём, пока календарь закроется — важная правка:
+        # раньше выпадающий список перекрывался календарём, поэтому ждём исчезновения DATEPICKER
+        try:
+            self.wait.until(EC.invisibility_of_element_located(OrderPageLocators.DATEPICKER))
+        except Exception:
+            # если по каким-то причинам элемент не найден или уже закрыт, продолжаем дальше
+            pass
+
+        # Выбираем срок аренды
         self.wait_and_click(OrderPageLocators.RENTAL_PERIOD_FIELD)
         rental_option = OrderPageLocators.RENTAL_PERIOD_OPTION(rental_period)
-        try:
-            self.wait.until(EC.element_to_be_clickable(rental_option)).click()
-        except TimeoutException:
-            # иногда список не успевает открыться — пробуем ещё раз
-            self.wait_and_click(OrderPageLocators.RENTAL_PERIOD_FIELD)
-            self.wait.until(EC.element_to_be_clickable(rental_option)).click()
+        # ждём видимости и кликаем
+        self.wait.until(EC.visibility_of_element_located(rental_option))
+        # Используем wait_and_click, чтобы соблюсти твои утилиты
+        self.wait_and_click(rental_option)
 
-        # Выбор цвета
-        color_checkbox = OrderPageLocators.COLOR_CHECKBOX(color)
-        self.wait_and_click(color_checkbox)
+        # Цвет самоката — используем локатор-лямбду: ожидаемый текст напр., "чёрный жемчуг"
+        color_locator = OrderPageLocators.COLOR_CHECKBOX(scooter_color)
+        # если такой локатор есть — кликаем
+        self.wait_and_click(color_locator)
 
         # Комментарий
         self.wait_and_send_keys(OrderPageLocators.COMMENT_FIELD, comment)
 
-        # Клик по кнопке "Заказать" с гарантией клика
-        self.wait.until(EC.element_to_be_clickable(OrderPageLocators.ORDER_BUTTON))
-        order_button = self.wait_for_element(OrderPageLocators.ORDER_BUTTON)
-        self.scroll_to_element(OrderPageLocators.ORDER_BUTTON)
-        order_button.click()
+        # Нажимаем кнопку "Заказать"
+        self.wait_and_click(OrderPageLocators.ORDER_BUTTON)
 
-        
+
     @allure.step("Подтверждение заказа")
     def confirm_order(self):
         self.wait_and_click(OrderPageLocators.YES_BUTTON)
