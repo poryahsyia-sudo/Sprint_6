@@ -17,12 +17,12 @@ class FaqPage(BasePage):
     @allure.step("Клик по вопросу №{index}")
     def click_question(self, index):
         self.scroll_to_faq_section()
-        question_locator = (By.CSS_SELECTOR, FaqPageLocators.QUESTION.format(index))
-        question = self.wait.until(EC.element_to_be_clickable(question_locator))
+        locator = (FaqPageLocators.QUESTION[0], FaqPageLocators.QUESTION[1].format(index - 1))
+        question = self.wait.until(EC.element_to_be_clickable(locator))
         question.click()
 
     @allure.step("Получение текста ответа для вопроса №{index}")
     def get_answer_text(self, index):
-        answer_locator = (By.CSS_SELECTOR, FaqPageLocators.ANSWER.format(index))
-        answer = self.wait.until(EC.visibility_of_element_located(answer_locator))
-        return answer.text
+        locator = (FaqPageLocators.ANSWER[0], FaqPageLocators.ANSWER[1].format(index - 1))
+        element = self.wait.until(EC.visibility_of_element_located(locator))
+        return element.text
