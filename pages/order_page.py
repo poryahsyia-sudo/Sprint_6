@@ -36,21 +36,20 @@ class OrderPage(BasePage):
     @allure.step("Заполнение второй части формы заказа: дата={date}, срок={rental_period}")
     def fill_second_step(self, date: str, rental_period: str, scooter_color: str, comment: str):
         self.wait_and_click(OrderPageLocators.DATE_FIELD)
-        day = date.split('.')[0].lstrip('0')
-        self.wait_and_click((By.XPATH, f"//div[contains(@class, 'react-datepicker__day') and text()='{day}']"))
-        WebDriverWait(self.driver, 5).until(
-            EC.invisibility_of_element_located((By.CLASS_NAME, "react-datepicker"))
-        )
-
-        # Выбираем срок аренды
+        self.wait.until(EC.visibility_of_element_located(OrderPageLocators.DATEPICKER))  # ждем появления календаря
+        day = date.split("-")[-1].lstrip("0")
+        day_locator = (By.XPATH, f"//div[contains(@class, 'react-datepicker__day') and text()='{day}']")
+        self.wait.until(EC.element_to_be_clickable(day_locator))
+        self.scroll_to_element(day_locator)
+        self.wait_and_click(day_locator)
         self.wait_and_click(OrderPageLocators.RENTAL_PERIOD_DROPDOWN)
         rental_option = (By.XPATH, OrderPageLocators.RENTAL_PERIOD_OPTION_TEMPLATE.format(rental_period))
         self.scroll_to_element(rental_option)
         self.wait_and_click(rental_option)
         color = scooter_color.lower()
-        if color == "black":
+        if "чёр" in color or "black" in color:
             self.wait_and_click(OrderPageLocators.COLOR_BLACK)
-        elif color in ("grey", "gray"):
+        elif "сер" in color or "grey" in color or "gray" in color:
             self.wait_and_click(OrderPageLocators.COLOR_GREY)
         self.wait_and_send_keys(OrderPageLocators.COMMENT_FIELD, comment)
         self.wait_and_click(OrderPageLocators.ORDER_BUTTON)
