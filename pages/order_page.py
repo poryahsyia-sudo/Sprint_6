@@ -47,7 +47,7 @@ class OrderPage(BasePage):
             self.wait_and_click(OrderPageLocators.COLOR_CHECKBOX("чёрный"))
         elif "сер" in color or "grey" in color or "gray" in color:
             self.wait_and_click(OrderPageLocators.COLOR_CHECKBOX("серая"))
-        self.wait_and_send_keys(OrderPageLocators.COMMENT_FIELD, comment)»
+        self.wait_and_send_keys(OrderPageLocators.COMMENT_FIELD, comment)
         order_btn = self.scroll_to_element(OrderPageLocators.ORDER_BUTTON)
         self.wait.until(EC.element_to_be_clickable(OrderPageLocators.ORDER_BUTTON))
         order_btn.click()
