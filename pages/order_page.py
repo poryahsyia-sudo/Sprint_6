@@ -1,5 +1,6 @@
 import allure
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from pages.base_page import BasePage
 from locators.main_page_locators import MainPageLocators
@@ -22,11 +23,11 @@ class OrderPage(BasePage):
 
     @allure.step("Заполнение первой части формы заказа: {first_name} {last_name}")
     def fill_first_step(self, first_name: str, last_name: str, address: str, metro_station: str, phone: str):
-        self.wait_and_send_keys(OrderPageLocators.FIRST_NAME_FIELD, first_name)
-        self.wait_and_send_keys(OrderPageLocators.LAST_NAME_FIELD, last_name)
+        self.wait_and_send_keys(OrderPageLocators.NAME_FIELD, first_name)
+        self.wait_and_send_keys(OrderPageLocators.SURNAME_FIELD, last_name)
         self.wait_and_send_keys(OrderPageLocators.ADDRESS_FIELD, address)
         self.wait_and_click(OrderPageLocators.METRO_FIELD)
-        metro_option = (By.XPATH, f"//div[@class='Order_Text__2broi' and text()='{metro_station}'] | //button[text()='{metro_station}'] | //li[text()='{metro_station}']")
+        metro_option = (By.XPATH, OrderPageLocators.METRO_OPTION_TEMPLATE.format(metro_station))
         self.scroll_to_element(metro_option)
         self.wait_and_click(metro_option)
         self.wait_and_send_keys(OrderPageLocators.PHONE_FIELD, phone)
@@ -36,31 +37,28 @@ class OrderPage(BasePage):
     def fill_second_step(self, date: str, rental_period: str, scooter_color: str, comment: str):
         self.wait_and_click(OrderPageLocators.DATE_FIELD)
         self.wait_and_send_keys(OrderPageLocators.DATE_FIELD, date)
-        self.wait_and_press_enter(OrderPageLocators.DATE_FIELD)
-        self.wait_and_click(OrderPageLocators.RENTAL_PERIOD_FIELD)
-        rental_option = (By.XPATH, f"//div[contains(@class, 'Dropdown-option') and text()='{rental_period}']")
-        self.wait.until(EC.visibility_of_element_located(rental_option))
+        self.driver.find_element(*OrderPageLocators.DATE_FIELD).send_keys(Keys.ENTER)
+        self.wait.until(EC.invisibility_of_element_located((By.CLASS_NAME, "react-datepicker")))
+        self.wait_and_click(OrderPageLocators.RENTAL_PERIOD_DROPDOWN)
+        rental_option = (By.XPATH, OrderPageLocators.RENTAL_PERIOD_OPTION_TEMPLATE.format(rental_period))
         self.scroll_to_element(rental_option)
         self.wait_and_click(rental_option)
         color = scooter_color.lower()
-        if "чёрн" in color or "black" in color:
-            self.wait_and_click(OrderPageLocators.COLOR_CHECKBOX("чёрный"))
-        elif "сер" in color or "grey" in color or "gray" in color:
-            self.wait_and_click(OrderPageLocators.COLOR_CHECKBOX("серая"))
+        if color == "black":
+            self.wait_and_click(OrderPageLocators.COLOR_BLACK)
+        elif color in ("grey", "gray"):
+            self.wait_and_click(OrderPageLocators.COLOR_GREY)
         self.wait_and_send_keys(OrderPageLocators.COMMENT_FIELD, comment)
-        order_btn = self.scroll_to_element(OrderPageLocators.ORDER_BUTTON)
-        self.wait.until(EC.element_to_be_clickable(OrderPageLocators.ORDER_BUTTON))
-        order_btn.click()
-
+        self.wait_and_click(OrderPageLocators.ORDER_BUTTON)
 
     @allure.step("Подтверждение заказа")
     def confirm_order(self):
-        self.wait_and_click(OrderPageLocators.YES_BUTTON)
+        self.wait_and_click(OrderPageLocators.CONFIRM_BUTTON)
 
     @allure.step("Проверка успешного оформления заказа")
     def check_success_message(self) -> bool:
         try:
-            self.wait.until(EC.visibility_of_element_located(OrderPageLocators.STATUS_MODAL))
+            self.wait.until(EC.visibility_of_element_located(OrderPageLocators.ORDER_SUCCESS_POPUP))
             return True
-        except Exception:
+        except:
             return False
