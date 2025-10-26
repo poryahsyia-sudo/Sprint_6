@@ -4,55 +4,51 @@ from pages.main_page import MainPage
 from pages.order_page import OrderPage
 from test_data import ORDER_USERS
 
-@allure.feature("Проверка оформления заказа")
+@allure.suite("Тест оформления заказа")
 class TestOrderFlow:
 
+    @pytest.mark.parametrize("user", ORDER_USERS)
     @allure.title("Оформление заказа через верхнюю кнопку 'Заказать'")
-    def test_order_from_top_button(self, driver):
+    def test_order_from_top_button(self, driver, user):
         main = MainPage(driver)
         main.open_main_page()
-
         order_page = OrderPage(driver)
         order_page.click_top_order_button()
-
         order_page.fill_first_step(
-            ORDER_USERS["first_name"],
-            ORDER_USERS["last_name"],
-            ORDER_USERS["address"],
-            ORDER_USERS["metro_station"],
-            ORDER_USERS["phone"]
+            user["first_name"],
+            user["last_name"],
+            user["address"],
+            user["metro_station"],
+            user["phone"]
         )
         order_page.fill_second_step(
-            date="10.10.2025",
-            rental_period="двое суток",
-            scooter_color="black",
-            comment=ORDER_USERS["comment"]
+            "2025-10-30",
+            "двое суток",
+            "чёрный жемчуг",
+            user["comment"]
         )
         order_page.confirm_order()
+        assert order_page.check_success_message(), "Сообщение об успешном заказе не появилось"
 
-        assert order_page.check_success_message(), "Сообщение об успешном заказе не отображается"
-
+    @pytest.mark.parametrize("user", ORDER_USERS)
     @allure.title("Оформление заказа через нижнюю кнопку 'Заказать'")
-    def test_order_from_bottom_button(self, driver):
+    def test_order_from_bottom_button(self, driver, user):
         main = MainPage(driver)
         main.open_main_page()
-
         order_page = OrderPage(driver)
         order_page.click_bottom_order_button()
-
         order_page.fill_first_step(
-            ORDER_USERS["first_name"],
-            ORDER_USERS["last_name"],
-            ORDER_USERS["address"],
-            ORDER_USERS["metro_station"],
-            ORDER_USERS["phone"]
+            user["first_name"],
+            user["last_name"],
+            user["address"],
+            user["metro_station"],
+            user["phone"]
         )
         order_page.fill_second_step(
-            date="12.10.2025",
-            rental_period="сутки",
-            scooter_color="grey",
-            comment=ORDER_USERS["comment"]
+            "2025-10-31",
+            "один день",
+            "серая безысходность",
+            user["comment"]
         )
         order_page.confirm_order()
-
-        assert order_page.check_success_message(), "Сообщение об успешном заказе не отображается"
+        assert order_page.check_success_message(), "Сообщение об успешном заказе не появилось"
