@@ -60,9 +60,9 @@ class OrderPage:
         )
         option.click()
 
-    def select_scooter_color(self):
+    def select_scooter_color(self, color_locator):
         color_element = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable(OrderPageLocators.COLOR_BLACK)
+            EC.element_to_be_clickable(color_locator)
         )
         color_element.click()
 
