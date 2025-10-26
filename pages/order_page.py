@@ -35,20 +35,23 @@ class OrderPage(BasePage):
     @allure.step("Заполнение второй части формы заказа: дата={date}, срок={rental_period}")
     def fill_second_step(self, date: str, rental_period: str, scooter_color: str, comment: str):
         self.wait_and_click(OrderPageLocators.DATE_FIELD)
-        self.wait.until(EC.visibility_of_element_located(OrderPageLocators.DATEPICKER))
-        day_element = (By.XPATH, f"//div[contains(@class, 'react-datepicker__day') and text()='{int(date.split('-')[-1])}']")
-        self.wait_and_click(day_element)
+        self.wait_and_send_keys(OrderPageLocators.DATE_FIELD, date)
+        self.wait_and_press_enter(OrderPageLocators.DATE_FIELD)  # закрыть календарь
         self.wait_and_click(OrderPageLocators.RENTAL_PERIOD_FIELD)
-        rental_option = (By.XPATH, f"//div[@class='Dropdown-option' and text()='{rental_period}']")
+        rental_option = (By.XPATH, f"//div[contains(@class, 'Dropdown-option') and text()='{rental_period}']")
+        self.wait.until(EC.visibility_of_element_located(rental_option))
         self.scroll_to_element(rental_option)
         self.wait_and_click(rental_option)
         color = scooter_color.lower()
         if "чёрн" in color or "black" in color:
-            self.wait_and_click(OrderPageLocators.COLOR_CHECKBOX("чёрный жемчуг"))
+            self.wait_and_click(OrderPageLocators.COLOR_CHECKBOX("чёрный"))
         elif "сер" in color or "grey" in color or "gray" in color:
-            self.wait_and_click(OrderPageLocators.COLOR_CHECKBOX("серая безысходность"))
-        self.wait_and_send_keys(OrderPageLocators.COMMENT_FIELD, comment)
-        self.wait_and_click(OrderPageLocators.ORDER_BUTTON)
+            self.wait_and_click(OrderPageLocators.COLOR_CHECKBOX("серая"))
+        self.wait_and_send_keys(OrderPageLocators.COMMENT_FIELD, comment)»
+        order_btn = self.scroll_to_element(OrderPageLocators.ORDER_BUTTON)
+        self.wait.until(EC.element_to_be_clickable(OrderPageLocators.ORDER_BUTTON))
+        order_btn.click()
+
 
     @allure.step("Подтверждение заказа")
     def confirm_order(self):
