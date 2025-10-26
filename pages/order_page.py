@@ -46,10 +46,14 @@ class OrderPage(BasePage):
         date_cell = (By.XPATH, f"//div[contains(@class, 'react-datepicker__day') and not(contains(@class, '--outside-month')) and text()='{day}']")
         self.wait.until(EC.element_to_be_clickable(date_cell)).click()
 
-        # Выбор срока аренды
+        # 🔥 исправленный выбор периода аренды
         self.wait_and_click(OrderPageLocators.RENTAL_PERIOD_FIELD)
         rental_option = OrderPageLocators.RENTAL_PERIOD_OPTION(rental_period)
-        self.wait_and_click(rental_option)
+
+# Ждём, пока выпадающий список реально появится
+        self.wait.until(EC.visibility_of_element_located(rental_option))
+        self.wait.until(EC.element_to_be_clickable(rental_option)).click()
+
 
         # Выбор цвета
         color_checkbox = OrderPageLocators.COLOR_CHECKBOX(scooter_color)
