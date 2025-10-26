@@ -14,7 +14,7 @@ class OrderPageLocators:
     DATE_FIELD = (By.XPATH, "//input[@placeholder='* Когда привезти самокат']")
     RENTAL_PERIOD_DROPDOWN = (By.XPATH, "//div[@class='Dropdown-placeholder']")
     RENTAL_PERIOD_OPTION_TEMPLATE = "//div[@class='Dropdown-option' and text()='{}']"
-    COLOR_BLACK = (By.XPATH, "//label[text()='чёрный']")
+    COLOR_BLACK = (By.XPATH, "//label[text()='чёрный жемчуг']")
     COMMENT_FIELD = (By.XPATH, "//input[@placeholder='Комментарий для курьера']")
     ORDER_BUTTON = (By.XPATH, "//button[text()='Заказать']")
     CONFIRM_BUTTON = (By.XPATH, "//button[text()='Да']")
