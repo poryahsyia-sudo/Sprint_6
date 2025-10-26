@@ -42,3 +42,7 @@ class BasePage:
         self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
         element.click()
 
+    def click_order_top(self):
+        button = self.scroll_to_element(LogoPageLocators.TOP_ORDER_BUTTON)
+        self.wait.until(EC.element_to_be_clickable(LogoPageLocators.TOP_ORDER_BUTTON))
+        button.click()
