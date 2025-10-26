@@ -27,7 +27,6 @@ class TestOrderFlow:
         order_page.fill_phone(user["phone"])
         order_page.click_next_button()
         order_page.fill_date_and_select_rental_period(user["date"], "сутки")
-        order_page.select_scooter_color(OrderPageLocators.COLOR_BLACK)
         order_page.fill_comment(user["comment"])
         order_page.click_order_button()
         order_page.confirm_order()
