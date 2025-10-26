@@ -28,6 +28,11 @@ class OrderPage:
         metro_input = self.wait.until(EC.element_to_be_clickable(OrderPageLocators.METRO_FIELD))
         self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", metro_input)
         metro_input.click()
+        metro_option = self.wait.until(
+            EC.presence_of_element_located((By.XPATH, OrderPageLocators.METRO_OPTION_TEMPLATE.format(metro_name)))
+        )
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", metro_option)
+
 
     def fill_phone(self, phone):
         field = self.wait.until(EC.element_to_be_clickable(OrderPageLocators.PHONE_FIELD))
