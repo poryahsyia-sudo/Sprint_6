@@ -36,7 +36,7 @@ class OrderPage(BasePage):
     def fill_second_step(self, date: str, rental_period: str, scooter_color: str, comment: str):
         self.wait_and_click(OrderPageLocators.DATE_FIELD)
         self.wait_and_send_keys(OrderPageLocators.DATE_FIELD, date)
-        self.wait_and_press_enter(OrderPageLocators.DATE_FIELD)  # закрыть календарь
+        self.wait_and_press_enter(OrderPageLocators.DATE_FIELD)
         self.wait_and_click(OrderPageLocators.RENTAL_PERIOD_FIELD)
         rental_option = (By.XPATH, f"//div[contains(@class, 'Dropdown-option') and text()='{rental_period}']")
         self.wait.until(EC.visibility_of_element_located(rental_option))
