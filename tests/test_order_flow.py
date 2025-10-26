@@ -17,9 +17,9 @@ class TestOrderFlow:
         base_page = BasePage(driver)
         order_page = OrderPage(driver)
         if order_button == "top":
-            base_page.wait_and_click(OrderPageLocators.ORDER_BUTTON_TOP)
+            base_page.scroll_into_view_and_click(OrderPageLocators.ORDER_BUTTON_TOP)
         else:
-            base_page.wait_and_click(OrderPageLocators.ORDER_BUTTON_BOTTOM)
+            base_page.scroll_into_view_and_click(OrderPageLocators.ORDER_BUTTON_BOTTOM)
         order_page.fill_name(user["name"])
         order_page.fill_surname(user["surname"])
         order_page.fill_address(user["address"])

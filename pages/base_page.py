@@ -36,3 +36,9 @@ class BasePage:
     
     def scroll_to_faq_section(self):
         return self.scroll_to_element(FaqPageLocators.FAQ_SECTION)
+    
+    def scroll_into_view_and_click(self, locator):
+        element = self.wait.until(EC.presence_of_element_located(locator))
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+        element.click()
+
