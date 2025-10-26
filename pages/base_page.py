@@ -1,34 +1,28 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from config import DEFAULT_TIMEOUT
-import allure
-
 
 class BasePage:
     def __init__(self, driver):
         self.driver = driver
         self.wait = WebDriverWait(driver, DEFAULT_TIMEOUT)
 
-    @allure.step("Прокрутка до элемента {locator}")
     def scroll_to_element(self, locator):
         element = self.wait.until(EC.presence_of_element_located(locator))
         self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
         return element
 
-    @allure.step("Ожидание кликабельности и клик по элементу {locator}")
     def wait_and_click(self, locator):
         element = self.wait.until(EC.element_to_be_clickable(locator))
         element.click()
         return element
 
-    @allure.step("Ожидание кликабельности и ввод текста '{text}' в элемент {locator}")
     def wait_and_send_keys(self, locator, text):
         element = self.wait.until(EC.element_to_be_clickable(locator))
         element.clear()
         element.send_keys(text)
         return element
 
-    @allure.step("Нажать Enter в элементе {locator}")
     def wait_and_press_enter(self, locator):
         element = self.wait.until(EC.element_to_be_clickable(locator))
         element.send_keys("\n")
