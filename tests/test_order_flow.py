@@ -1,8 +1,12 @@
 import pytest
 import allure
-from pages.main_page import MainPage
 from pages.order_page import OrderPage
 from test_data import ORDER_USERS
+from locators.order_page_locators import OrderPageLocators
+from config import DEFAULT_TIMEOUT
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from pages.base_page import BasePage
 
 
 @allure.suite("Тест оформления заказа")
@@ -11,8 +15,8 @@ class TestOrderFlow:
     @pytest.mark.parametrize("user", ORDER_USERS)
     @allure.title("Оформление заказа через верхнюю кнопку 'Заказать'")
     def test_order_from_top_button(self, driver, user):
-        main = MainPage(driver)
-        main.open_main_page()
+        main = BasePage(driver)
+        main.open_page()
         main.click_top_order_button()
 
         order_page = OrderPage(driver)
@@ -37,8 +41,8 @@ class TestOrderFlow:
     @pytest.mark.parametrize("user", ORDER_USERS)
     @allure.title("Оформление заказа через нижнюю кнопку 'Заказать'")
     def test_order_from_bottom_button(self, driver, user):
-        main = MainPage(driver)
-        main.open_main_page()
+        main = BasePage(driver)
+        main.open_page()
         main.click_bottom_order_button()
 
         order_page = OrderPage(driver)

@@ -23,3 +23,4 @@ class FaqPage(BasePage):
         locator = (FaqPageLocators.ANSWER[0], FaqPageLocators.ANSWER[1].format(index - 1))
         element = self.wait.until(EC.visibility_of_element_located(locator))
         return element.text
+    
