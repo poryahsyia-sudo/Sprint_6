@@ -37,7 +37,6 @@ class OrderPage:
         )
         metro_option.click()
 
-
     def fill_phone(self, phone):
         field = self.wait.until(EC.element_to_be_clickable(OrderPageLocators.PHONE_FIELD))
         field.clear()
