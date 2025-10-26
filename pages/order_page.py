@@ -35,36 +35,39 @@ class OrderPage(BasePage):
         self.wait_and_click(OrderPageLocators.NEXT_BUTTON)
 
     @allure.step("Заполнение второй части формы заказа: дата={date}, срок={rental_period}")
-    def fill_second_step(self, date: str, rental_period: str, scooter_color: str, comment: str):
-        # Выбор даты
+    def fill_second_step(self, date, rental_period, color, comment):
+        # Ввод даты и закрытие календаря выбором даты
         self.wait_and_click(OrderPageLocators.DATE_FIELD)
-        self.wait.until(EC.visibility_of_element_located(OrderPageLocators.DATEPICKER))
+        date_field = self.wait_for_element(OrderPageLocators.DATE_FIELD)
+        date_field.send_keys(Keys.CONTROL + "a")
+        date_field.send_keys(Keys.BACKSPACE)
+        date_field.send_keys(date)
+        date_field.send_keys(Keys.ENTER)  # календарь закроется после выбора даты
 
-        # 🔥 исправленный выбор даты
-        # извлекаем только день (например, из '2025-10-30' берём '30')
-        day = str(int(date.split('-')[-1]))
-        date_cell = (By.XPATH, f"//div[contains(@class, 'react-datepicker__day') and not(contains(@class, '--outside-month')) and text()='{day}']")
-        self.wait.until(EC.element_to_be_clickable(date_cell)).click()
-
-        # 🔥 исправленный выбор периода аренды
+        # Выбор периода аренды
         self.wait_and_click(OrderPageLocators.RENTAL_PERIOD_FIELD)
         rental_option = OrderPageLocators.RENTAL_PERIOD_OPTION(rental_period)
-
-# Ждём, пока выпадающий список реально появится
-        self.wait.until(EC.visibility_of_element_located(rental_option))
-        self.wait.until(EC.element_to_be_clickable(rental_option)).click()
-
+        try:
+            self.wait.until(EC.element_to_be_clickable(rental_option)).click()
+        except TimeoutException:
+            # иногда список не успевает открыться — пробуем ещё раз
+            self.wait_and_click(OrderPageLocators.RENTAL_PERIOD_FIELD)
+            self.wait.until(EC.element_to_be_clickable(rental_option)).click()
 
         # Выбор цвета
-        color_checkbox = OrderPageLocators.COLOR_CHECKBOX(scooter_color)
+        color_checkbox = OrderPageLocators.COLOR_CHECKBOX(color)
         self.wait_and_click(color_checkbox)
 
         # Комментарий
         self.wait_and_send_keys(OrderPageLocators.COMMENT_FIELD, comment)
 
-        # Кнопка "Заказать"
-        self.wait_and_click(OrderPageLocators.ORDER_BUTTON)
+        # Клик по кнопке "Заказать" с гарантией клика
+        self.wait.until(EC.element_to_be_clickable(OrderPageLocators.ORDER_BUTTON))
+        order_button = self.wait_for_element(OrderPageLocators.ORDER_BUTTON)
+        self.scroll_to_element(OrderPageLocators.ORDER_BUTTON)
+        order_button.click()
 
+        
     @allure.step("Подтверждение заказа")
     def confirm_order(self):
         self.wait_and_click(OrderPageLocators.YES_BUTTON)
