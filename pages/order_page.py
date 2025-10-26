@@ -2,10 +2,22 @@ import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from pages.base_page import BasePage
+from locators.main_page_locators import MainPageLocators
 from locators.order_page_locators import OrderPageLocators
 
-
 class OrderPage(BasePage):
+
+    @allure.step("Клик по верхней кнопке 'Заказать'")
+    def click_top_order_button(self):
+        button = self.scroll_to_element(MainPageLocators.TOP_ORDER_BUTTON)
+        self.wait.until(EC.element_to_be_clickable(MainPageLocators.TOP_ORDER_BUTTON))
+        button.click()
+
+    @allure.step("Клик по нижней кнопке 'Заказать'")
+    def click_bottom_order_button(self):
+        button = self.scroll_to_element(MainPageLocators.BOTTOM_ORDER_BUTTON)
+        self.wait.until(EC.element_to_be_clickable(MainPageLocators.BOTTOM_ORDER_BUTTON))
+        button.click()
 
     @allure.step("Заполнение первой части формы заказа: {first_name} {last_name}")
     def fill_first_step(self, first_name: str, last_name: str, address: str, metro_station: str, phone: str):
@@ -28,21 +40,22 @@ class OrderPage(BasePage):
         rental_option = (By.XPATH, OrderPageLocators.RENTAL_PERIOD_OPTION_TEMPLATE.format(rental_period))
         self.scroll_into_view(rental_option)
         self.wait_and_click(rental_option)
+
         color = scooter_color.lower()
         if color == "black":
             self.wait_and_click(OrderPageLocators.COLOR_BLACK)
-        elif color == "grey" or color == "gray":
+        elif color in ("grey", "gray"):
             self.wait_and_click(OrderPageLocators.COLOR_GREY)
+
         self.wait_and_send_keys(OrderPageLocators.COMMENT_FIELD, comment)
         self.wait_and_click(OrderPageLocators.ORDER_BUTTON)
 
-    @allure.step("Подтверждаю заказ")
+    @allure.step("Подтверждение заказа")
     def confirm_order(self):
         self.wait_and_click(OrderPageLocators.CONFIRM_BUTTON)
 
     @allure.step("Проверка успешного оформления заказа")
-    def is_order_successful(self) -> bool:
-        # ждём всплывшего попапа или хедера модалки с текстом "Заказ оформлен"
+    def check_success_message(self) -> bool:
         try:
             self.wait.until(EC.visibility_of_element_located(OrderPageLocators.ORDER_SUCCESS_POPUP))
             return True

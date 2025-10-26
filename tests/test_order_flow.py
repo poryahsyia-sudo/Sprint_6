@@ -9,11 +9,12 @@ class TestOrderFlow:
 
     @allure.title("Оформление заказа через верхнюю кнопку 'Заказать'")
     def test_order_from_top_button(self, driver):
-        page = MainPage(driver)
-        page.open_main_page()
-        page.click_top_order_button()
+        main = MainPage(driver)
+        main.open_main_page()
 
         order_page = OrderPage(driver)
+        order_page.click_top_order_button()
+
         order_page.fill_first_step(
             ORDER_USERS["first_name"],
             ORDER_USERS["last_name"],
@@ -33,11 +34,12 @@ class TestOrderFlow:
 
     @allure.title("Оформление заказа через нижнюю кнопку 'Заказать'")
     def test_order_from_bottom_button(self, driver):
-        page = MainPage(driver)
-        page.open_main_page()
-        page.click_bottom_order_button()
+        main = MainPage(driver)
+        main.open_main_page()
 
         order_page = OrderPage(driver)
+        order_page.click_bottom_order_button()
+
         order_page.fill_first_step(
             ORDER_USERS["first_name"],
             ORDER_USERS["last_name"],
