@@ -40,9 +40,11 @@ class OrderPage(BasePage):
         self.wait_and_click(OrderPageLocators.DATE_FIELD)
         self.wait.until(EC.visibility_of_element_located(OrderPageLocators.DATEPICKER))
 
-        # Клик по нужному числу, чтобы закрыть календарь
-        date_cell = (By.XPATH, f"//div[contains(@class, 'react-datepicker__day') and text()='{date}']")
-        self.wait_and_click(date_cell)
+        # 🔥 исправленный выбор даты
+        # извлекаем только день (например, из '2025-10-30' берём '30')
+        day = str(int(date.split('-')[-1]))
+        date_cell = (By.XPATH, f"//div[contains(@class, 'react-datepicker__day') and not(contains(@class, '--outside-month')) and text()='{day}']")
+        self.wait.until(EC.element_to_be_clickable(date_cell)).click()
 
         # Выбор срока аренды
         self.wait_and_click(OrderPageLocators.RENTAL_PERIOD_FIELD)
