@@ -26,7 +26,7 @@ class OrderPage(BasePage):
         self.wait_and_send_keys(OrderPageLocators.ADDRESS_FIELD, address)
         self.wait_and_click(OrderPageLocators.METRO_FIELD)
         metro_option = (By.XPATH, OrderPageLocators.METRO_OPTION_TEMPLATE.format(metro_station))
-        self.scroll_into_view(metro_option)
+        self.scroll_to_element(metro_option)
         self.wait_and_click(metro_option)
         self.wait_and_send_keys(OrderPageLocators.PHONE_FIELD, phone)
         self.wait_and_click(OrderPageLocators.NEXT_BUTTON)
@@ -38,7 +38,7 @@ class OrderPage(BasePage):
         self.wait_and_press_enter(OrderPageLocators.DATE_FIELD)
         self.wait_and_click(OrderPageLocators.RENTAL_PERIOD_DROPDOWN)
         rental_option = (By.XPATH, OrderPageLocators.RENTAL_PERIOD_OPTION_TEMPLATE.format(rental_period))
-        self.scroll_into_view(rental_option)
+        self.scroll_to_element(rental_option)
         self.wait_and_click(rental_option)
 
         color = scooter_color.lower()
@@ -46,7 +46,6 @@ class OrderPage(BasePage):
             self.wait_and_click(OrderPageLocators.COLOR_BLACK)
         elif color in ("grey", "gray"):
             self.wait_and_click(OrderPageLocators.COLOR_GREY)
-
         self.wait_and_send_keys(OrderPageLocators.COMMENT_FIELD, comment)
         self.wait_and_click(OrderPageLocators.ORDER_BUTTON)
 
