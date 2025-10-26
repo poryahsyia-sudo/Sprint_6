@@ -70,10 +70,10 @@ class OrderPage:
         field = self.wait.until(EC.element_to_be_clickable(OrderPageLocators.COMMENT_FIELD))
         field.send_keys(comment)
 
-    def click_order_button(self):
-        button = self.wait.until(EC.element_to_be_clickable(OrderPageLocators.ORDER_BUTTON))
+    def click_order_button(self, locator):
+        button = self.wait.until(EC.element_to_be_clickable(locator))
         button.click()
-
+        
     def confirm_order(self):
         confirm = self.wait.until(EC.element_to_be_clickable(OrderPageLocators.CONFIRM_BUTTON))
         confirm.click()

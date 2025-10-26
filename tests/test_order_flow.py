@@ -29,7 +29,7 @@ class TestOrderFlow:
         order_page.fill_date_and_select_rental_period(user["date"], "сутки")
         order_page.select_scooter_color(OrderPageLocators.COLOR_BLACK)
         order_page.fill_comment(user["comment"])
-        order_page.click_order_button()
+        order_page.click_order_button(OrderPageLocators.ORDER_BUTTON)
         order_page.confirm_order()
         WebDriverWait(driver, DEFAULT_TIMEOUT).until(
             EC.visibility_of_element_located(OrderPageLocators.ORDER_SUCCESS_POPUP)
