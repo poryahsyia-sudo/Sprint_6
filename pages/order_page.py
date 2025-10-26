@@ -1,9 +1,11 @@
 import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 from pages.base_page import BasePage
 from locators.main_page_locators import MainPageLocators
 from locators.order_page_locators import OrderPageLocators
+
 
 class OrderPage(BasePage):
 
@@ -34,13 +36,17 @@ class OrderPage(BasePage):
     @allure.step("Заполнение второй части формы заказа: дата={date}, срок={rental_period}")
     def fill_second_step(self, date: str, rental_period: str, scooter_color: str, comment: str):
         self.wait_and_click(OrderPageLocators.DATE_FIELD)
-        self.wait_and_send_keys(OrderPageLocators.DATE_FIELD, date)
-        self.wait_and_press_enter(OrderPageLocators.DATE_FIELD)
+        day = date.split('.')[0].lstrip('0')
+        self.wait_and_click((By.XPATH, f"//div[contains(@class, 'react-datepicker__day') and text()='{day}']"))
+        WebDriverWait(self.driver, 5).until(
+            EC.invisibility_of_element_located((By.CLASS_NAME, "react-datepicker"))
+        )
+
+        # Выбираем срок аренды
         self.wait_and_click(OrderPageLocators.RENTAL_PERIOD_DROPDOWN)
         rental_option = (By.XPATH, OrderPageLocators.RENTAL_PERIOD_OPTION_TEMPLATE.format(rental_period))
         self.scroll_to_element(rental_option)
         self.wait_and_click(rental_option)
-
         color = scooter_color.lower()
         if color == "black":
             self.wait_and_click(OrderPageLocators.COLOR_BLACK)
