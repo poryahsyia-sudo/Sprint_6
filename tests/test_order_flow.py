@@ -10,7 +10,7 @@ from locators.order_page_locators import OrderPageLocators
 
 @allure.suite("Тест оформления заказа")
 class TestOrderFlow:
-
+    @pytest.mark.parametrize("order_button", ["top", "bottom"])
     @pytest.mark.parametrize("user", ORDER_USERS)
     @allure.title("Оформление заказа через кнопку 'Заказать'")
     def test_order_scooter_positive(self, driver, order_button, user): 
