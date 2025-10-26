@@ -16,7 +16,7 @@ class OrderPageLocators:
     RENTAL_PERIOD_OPTION_TEMPLATE = "//div[@class='Dropdown-option' and text()='{}']"
     COLOR_BLACK = (By.XPATH, "//label[text()='чёрный жемчуг']")
     COMMENT_FIELD = (By.XPATH, "//input[@placeholder='Комментарий для курьера']")
-    ORDER_BUTTON = (By.XPATH, "//button[text()='Заказать']")
+    ORDER_BUTTON = (By.XPATH, "//button[contains(text(),'Заказать') and contains(@class,'Button_Middle')]")
     CONFIRM_BUTTON = (By.XPATH, "//button[text()='Да']")
     ORDER_SUCCESS_POPUP = (By.XPATH, "//div[contains(text(), 'Заказ оформлен')]")
 
