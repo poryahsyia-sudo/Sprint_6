@@ -61,8 +61,10 @@ class OrderPage:
         option.click()
 
     def select_scooter_color(self):
-        color = self.wait.until(EC.element_to_be_clickable(OrderPageLocators.COLOR_BLACK))
-        color.click()
+        color_element = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable(OrderPageLocators.COLOR_BLACK)
+        )
+        color_element.click()
 
     def fill_comment(self, comment):
         field = self.wait.until(EC.element_to_be_clickable(OrderPageLocators.COMMENT_FIELD))
