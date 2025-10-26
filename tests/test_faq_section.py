@@ -10,6 +10,7 @@ class TestFaqSection:
     def test_faq_question_display(self, driver, index):
         page = FaqPage(driver)
         page.scroll_to_faq_section()
+        page.click_question(index)
         expected = page.get_answer_text(index)  # получаем текст из DOM
         page.click_question(index)
         actual = page.get_answer_text(index)    # получаем отображаемый текст

@@ -19,7 +19,9 @@ class FaqPage(BasePage):
         self.scroll_to_faq_section()
         locator = (FaqPageLocators.QUESTION[0], FaqPageLocators.QUESTION[1].format(index - 1))
         question = self.wait.until(EC.element_to_be_clickable(locator))
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", question)
         question.click()
+
 
     @allure.step("Получение текста ответа для вопроса №{index}")
     def get_answer_text(self, index):
