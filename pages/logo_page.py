@@ -14,3 +14,12 @@ class LogoPage(BasePage):
 
     def check_current_url(self, expected_url):
         return self.driver.current_url == expected_url
+
+    def click_order_top(self):
+        button = self.scroll_to_element(LogoPageLocators.TOP_ORDER_BUTTON)
+        self.wait.until(EC.element_to_be_clickable(LogoPageLocators.TOP_ORDER_BUTTON))
+        button.click()
+
+    def click_scooter_logo(self):
+        logo = self.wait.until(EC.element_to_be_clickable(LogoPageLocators.SCOOTER_LOGO))
+        logo.click()
