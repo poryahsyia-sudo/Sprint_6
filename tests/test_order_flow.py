@@ -10,6 +10,7 @@ from locators.order_page_locators import OrderPageLocators
 
 @allure.suite("Тест оформления заказа")
 class TestOrderFlow:
+
     @pytest.mark.parametrize("order_button", ["top", "bottom"])
     @pytest.mark.parametrize("user", ORDER_USERS)
     @allure.title("Оформление заказа через кнопку 'Заказать'")
@@ -31,8 +32,4 @@ class TestOrderFlow:
         order_page.fill_comment(user["comment"])
         order_page.click_order_button(OrderPageLocators.ORDER_BUTTON)
         order_page.confirm_order()
-        WebDriverWait(driver, DEFAULT_TIMEOUT).until(
-            EC.visibility_of_element_located(OrderPageLocators.ORDER_SUCCESS_POPUP)
-        )
-        success_text = driver.find_element(*OrderPageLocators.ORDER_SUCCESS_POPUP).text
-        assert "Заказ оформлен" in success_text, "Окно успешного заказа не появилось"
+        assert order_page.check_success_popup(), "Окно успешного заказа не появилось"

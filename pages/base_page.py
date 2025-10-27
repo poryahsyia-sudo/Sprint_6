@@ -10,6 +10,7 @@ class BasePage:
         self.driver = driver
         self.wait = WebDriverWait(driver, DEFAULT_TIMEOUT)
 
+    @allure.step("Открыть главную страницу")
     def open_page(self):
         self.driver.get(BASE_URL)
 
@@ -41,5 +42,11 @@ class BasePage:
         element = self.wait.until(EC.presence_of_element_located(locator))
         self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
         element.click()
+
+    def switch_to_new_tab_and_wait_url(self, expected_url):
+        self.wait.until(lambda d: len(d.window_handles) > 1)
+        self.driver.switch_to.window(self.driver.window_handles[-1])
+        self.wait.until(EC.url_contains(expected_url))
+
 
     

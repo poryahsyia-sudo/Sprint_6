@@ -1,3 +1,4 @@
+import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from locators.faq_page_locators import FaqPageLocators
@@ -5,6 +6,7 @@ from pages.base_page import BasePage
 
 class FaqPage(BasePage):
 
+    @allure.step("Прокрутить страницу до раздела FAQ")
     def scroll_to_faq_section(self):
         faq_block = self.wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, ".accordion"))
@@ -12,6 +14,7 @@ class FaqPage(BasePage):
         self.scroll_to_element((By.CSS_SELECTOR, ".accordion"))
         self.wait.until(EC.visibility_of(faq_block))
 
+    @allure.step("Кликнуть по вопросу №{index}")
     def click_question(self, index):
         self.scroll_to_faq_section()
         locator = (FaqPageLocators.QUESTION[0], FaqPageLocators.QUESTION[1].format(index - 1))
@@ -19,6 +22,7 @@ class FaqPage(BasePage):
         self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", question)
         question.click()
 
+    @allure.step("Получить текст ответа на вопрос №{index}")
     def get_answer_text(self, index):
         locator = (FaqPageLocators.ANSWER[0], FaqPageLocators.ANSWER[1].format(index - 1))
         element = self.wait.until(EC.visibility_of_element_located(locator))

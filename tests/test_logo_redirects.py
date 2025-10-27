@@ -11,16 +11,14 @@ class TestClickLogo:
 
     @allure.title("Проверка перехода по логотипу 'Самокат'")
     def test_click_scooter_logo_redirects_to_main(self, driver):
-        Logo = LogoPage(driver)
-        Logo.click_order_top()
-        Logo.click_scooter_logo()
-        assert Logo.check_current_url(BASE_URL), "Переход по логотипу 'Самокат' не открыл главную страницу"
+        logo = LogoPage(driver)
+        logo.click_order_top()
+        logo.click_scooter_logo()
+        assert logo.check_current_url(BASE_URL), "Переход по логотипу 'Самокат' не открыл главную страницу"
 
     @allure.title("Проверка открытия Дзена по логотипу 'Яндекс'")
     def test_click_yandex_logo_opens_dzen(self, driver):
-        Logo = LogoPage(driver)
-        Logo.click_yandex_logo()
-        WebDriverWait(driver, 10).until(lambda d: len(d.window_handles) > 1)
-        driver.switch_to.window(driver.window_handles[-1])
-        WebDriverWait(driver, 15).until(EC.url_contains(YANDEX_URL))
+        logo = LogoPage(driver)
+        logo.click_yandex_logo()
+        logo.switch_to_new_tab_and_wait_url(YANDEX_URL)
         assert YANDEX_URL in driver.current_url, f"Ожидался переход на {YANDEX_URL}"
