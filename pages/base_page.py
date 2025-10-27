@@ -4,6 +4,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from config import DEFAULT_TIMEOUT
 from locators.logo_page_locators import LogoPageLocators
 from locators.faq_page_locators import FaqPageLocators
+from selenium.webdriver import ActionChains
+from selenium.common.exceptions import TimeoutException
 from config import BASE_URL
 
 class BasePage:
@@ -22,8 +24,12 @@ class BasePage:
 
     def wait_and_click(self, locator):
         element = self.wait.until(EC.element_to_be_clickable(locator))
-        element.click()
-        return element
+        try:
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+            WebDriverWait(self.driver, 2).until(lambda d: element.is_displayed())
+            ActionChains(self.driver).move_to_element(element).pause(0.3).click().perform()
+        except TimeoutException:
+            raise AssertionError(f"Элемент {locator} не кликабелен даже после ожидания")
 
     def wait_and_send_keys(self, locator, text):
         element = self.wait.until(EC.element_to_be_clickable(locator))
