@@ -1,0 +1,59 @@
+import allure
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from config import DEFAULT_TIMEOUT
+from locators.logo_page_locators import LogoPageLocators
+from locators.faq_page_locators import FaqPageLocators
+from selenium.webdriver import ActionChains
+from selenium.common.exceptions import TimeoutException
+from config import BASE_URL
+
+class BasePage:
+    def __init__(self, driver):
+        self.driver = driver
+        self.wait = WebDriverWait(driver, DEFAULT_TIMEOUT)
+
+    @allure.step("Открыть главную страницу")
+    def open_page(self):
+        self.driver.get(BASE_URL)
+
+    def scroll_to_element(self, locator):
+        element = self.wait.until(EC.presence_of_element_located(locator))
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+        return element
+
+    def wait_and_click(self, locator):
+        element = self.wait.until(EC.element_to_be_clickable(locator))
+        try:
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+            WebDriverWait(self.driver, 2).until(lambda d: element.is_displayed())
+            ActionChains(self.driver).move_to_element(element).pause(0.3).click().perform()
+        except TimeoutException:
+            raise AssertionError(f"Элемент {locator} не кликабелен даже после ожидания")
+
+    def wait_and_send_keys(self, locator, text):
+        element = self.wait.until(EC.element_to_be_clickable(locator))
+        element.clear()
+        element.send_keys(text)
+        return element
+
+    def wait_and_press_enter(self, locator):
+        element = self.wait.until(EC.element_to_be_clickable(locator))
+        element.send_keys("\n")
+        return element
+    
+    def scroll_to_faq_section(self):
+        return self.scroll_to_element(FaqPageLocators.FAQ_SECTION)
+    
+    def scroll_into_view_and_click(self, locator):
+        element = self.wait.until(EC.presence_of_element_located(locator))
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+        element.click()
+
+    def switch_to_new_tab_and_wait_url(self, expected_url):
+        self.wait.until(lambda d: len(d.window_handles) > 1)
+        self.driver.switch_to.window(self.driver.window_handles[-1])
+        self.wait.until(EC.url_contains(expected_url))
+
+
+    
